@@ -48,7 +48,10 @@ y = data["label"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 model = MultinomialNB()
 model.fit(X_train, y_train)
+import pickle
 
+pickle.dump(model, open("model.pkl", "wb"))
+pickle.dump(vectorizer, open("vectorizer.pkl", "wb"))
 # Prediction function
 def predict_news(text):
     cleaned = clean_text(text)
