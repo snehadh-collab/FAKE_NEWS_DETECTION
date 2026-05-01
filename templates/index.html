@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fake News Detector</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 60%;
+            height: 140px;
+            border-radius: 12px;
+            padding: 15px;
+            border: none;
+            font-size: 16px;
+            outline: none;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 12px 30px;
+            border-radius: 30px;
+            border: none;
+            background: #00c6ff;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #0072ff;
+            color: white;
+        }
+
+        .result {
+            margin-top: 25px;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .real {
+            color: #00ff99;
+        }
+
+        .fake {
+            color: #ff4d4d;
+        }
+
+        .percent {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        .input-box {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #ccc;
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            word-wrap: break-word;
+        }
+
+        canvas {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🧠 Fake News Detector</h1>
+
+    <form method="POST">
+        <textarea name="news" placeholder="Paste your news here..." required>{{ news }}</textarea><br>
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if prediction %}
+        <div class="result 
+            {% if prediction == 'REAL NEWS' %}real{% else %}fake{% endif %}">
+            {{ prediction }}
+        </div>
+
+        <div class="percent">
+            Real: {{ real|round(2) }}% | Fake: {{ fake|round(2) }}%
+        </div>
+
+        <div class="input-box">
+            <b>Your Input:</b><br>
+            {{ news }}
+        </div>
+
+        <canvas id="chart" width="300" height="300"></canvas>
+
+        <script>
+            const realVal = Number("{{ real }}") || 0;
+            const fakeVal = Number("{{ fake }}") || 0;
+
+            const ctx = document.getElementById('chart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Real', 'Fake'],
+                    datasets: [{
+                        data: [realVal, fakeVal],
+                        backgroundColor: ['#00ff99', '#ff4d4d']
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+    {% endif %}
+</div>
+
+</body>
+</html>
